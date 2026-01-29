@@ -248,6 +248,14 @@ jobs:
             exit 1
           fi
           
+          if [ -f "emscripten_build_example/build/install/lib/libSDL3_mixer.a" ]; then
+            echo "✓ libSDL3_mixer.a found"
+            ls -lh emscripten_build_example/build/install/lib/libSDL3_mixer.a
+          else
+            echo "✗ libSDL3_mixer.a not found"
+            exit 1
+          fi
+          
           echo "All libraries built successfully!"
 
       - name: Upload emscripten example artifacts

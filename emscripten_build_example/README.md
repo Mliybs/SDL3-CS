@@ -18,7 +18,7 @@ This directory provides a standalone CMake example specifically for building SDL
 - `libSDL3.a` - SDL3 core library
 - `libSDL3_ttf.a` - SDL3 TrueType font library  
 - `libSDL3_image.a` - SDL3 image loading library
-- `libSDL3_mixer.a` - SDL3 audio mixing library (optional, commented out by default)
+- `libSDL3_mixer.a` - SDL3 audio mixing library
 
 All libraries are built as static archives suitable for linking with Emscripten applications.
 
@@ -82,11 +82,13 @@ build/install/
 ├── include/          # Header files for SDL3 libraries
 │   ├── SDL3/
 │   ├── SDL3_ttf/
-│   └── SDL3_image/
+│   ├── SDL3_image/
+│   └── SDL3_mixer/
 └── lib/              # Static library files
     ├── libSDL3.a
     ├── libSDL3_ttf.a
     ├── libSDL3_image.a
+    ├── libSDL3_mixer.a
     └── cmake/        # CMake config files for find_package()
 ```
 
@@ -110,8 +112,9 @@ set(CMAKE_PREFIX_PATH "/path/to/emscripten_build_example/build/install/lib/cmake
 find_package(SDL3 REQUIRED)
 find_package(SDL3_ttf REQUIRED)
 find_package(SDL3_image REQUIRED)
+find_package(SDL3_mixer REQUIRED)
 
-target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image)
+target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image SDL3_mixer::SDL3_mixer)
 ```
 
 Or link directly:
@@ -120,19 +123,8 @@ target_link_libraries(your_app
     /path/to/build/install/lib/libSDL3.a
     /path/to/build/install/lib/libSDL3_ttf.a
     /path/to/build/install/lib/libSDL3_image.a
+    /path/to/build/install/lib/libSDL3_mixer.a
 )
-```
-
-### Customization
-
-To enable SDL3_mixer, edit `CMakeLists.txt` and uncomment the SDL3_mixer section:
-
-```cmake
-# Uncomment these lines:
-# message(STATUS "Configuring SDL3_mixer library...")
-# set(SDLMIXER_VENDORED ON CACHE BOOL "Use vendored dependencies for SDL_mixer" FORCE)
-# ...
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL_mixer SDL_mixer_build)
 ```
 
 ### Notes
@@ -160,7 +152,7 @@ To enable SDL3_mixer, edit `CMakeLists.txt` and uncomment the SDL3_mixer section
 - `libSDL3.a` - SDL3 核心库
 - `libSDL3_ttf.a` - SDL3 TrueType 字体库
 - `libSDL3_image.a` - SDL3 图像加载库
-- `libSDL3_mixer.a` - SDL3 音频混音库（可选，默认已注释）
+- `libSDL3_mixer.a` - SDL3 音频混音库
 
 所有库都构建为静态归档文件，适合与 Emscripten 应用程序链接。
 
@@ -224,11 +216,13 @@ build/install/
 ├── include/          # SDL3 库的头文件
 │   ├── SDL3/
 │   ├── SDL3_ttf/
-│   └── SDL3_image/
+│   ├── SDL3_image/
+│   └── SDL3_mixer/
 └── lib/              # 静态库文件
     ├── libSDL3.a
     ├── libSDL3_ttf.a
     ├── libSDL3_image.a
+    ├── libSDL3_mixer.a
     └── cmake/        # 用于 find_package() 的 CMake 配置文件
 ```
 
@@ -252,8 +246,9 @@ set(CMAKE_PREFIX_PATH "/path/to/emscripten_build_example/build/install/lib/cmake
 find_package(SDL3 REQUIRED)
 find_package(SDL3_ttf REQUIRED)
 find_package(SDL3_image REQUIRED)
+find_package(SDL3_mixer REQUIRED)
 
-target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image)
+target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image SDL3_mixer::SDL3_mixer)
 ```
 
 或者直接链接：
@@ -262,19 +257,8 @@ target_link_libraries(your_app
     /path/to/build/install/lib/libSDL3.a
     /path/to/build/install/lib/libSDL3_ttf.a
     /path/to/build/install/lib/libSDL3_image.a
+    /path/to/build/install/lib/libSDL3_mixer.a
 )
-```
-
-### 自定义配置
-
-如需启用 SDL3_mixer，请编辑 `CMakeLists.txt` 并取消注释 SDL3_mixer 部分：
-
-```cmake
-# 取消注释以下几行：
-# message(STATUS "Configuring SDL3_mixer library...")
-# set(SDLMIXER_VENDORED ON CACHE BOOL "Use vendored dependencies for SDL_mixer" FORCE)
-# ...
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL_mixer SDL_mixer_build)
 ```
 
 ### 注意事项
