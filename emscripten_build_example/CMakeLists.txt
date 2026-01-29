@@ -54,6 +54,10 @@ set(SDLTTF_VENDORED ON CACHE BOOL "Use vendored dependencies for SDL_ttf" FORCE)
 set(SDLTTF_INSTALL ON CACHE BOOL "Install SDL_ttf" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL_ttf SDL_ttf_build)
 
+# Fix: Include SDL3_Headers in SDL3_ttf export set for unified builds
+# SDL3_ttf links publicly to SDL3::Headers, so it must be in the same export set
+install(TARGETS SDL3_Headers EXPORT SDL3_ttfTargets)
+
 # Build SDL3_image
 message(STATUS "Configuring SDL3_image library...")
 set(SDLIMAGE_VENDORED ON CACHE BOOL "Use vendored dependencies for SDL_image" FORCE)
@@ -62,6 +66,10 @@ set(SDLIMAGE_AVIF OFF CACHE BOOL "Disable AVIF support" FORCE)
 set(SDLIMAGE_INSTALL ON CACHE BOOL "Install SDL_image" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL_image SDL_image_build)
 
+# Fix: Include SDL3_Headers in SDL3_image export set for unified builds
+# SDL3_image links publicly to SDL3::Headers, so it must be in the same export set
+install(TARGETS SDL3_Headers EXPORT SDL3ImageExports)
+
 # Build SDL3_mixer
 message(STATUS "Configuring SDL3_mixer library...")
 set(SDLMIXER_VENDORED ON CACHE BOOL "Use vendored dependencies for SDL_mixer" FORCE)
@@ -69,6 +77,10 @@ set(SDLMIXER_DEPS_SHARED OFF CACHE BOOL "Build mixer dependencies as shared" FOR
 set(SDLMIXER_MP3_MPG123 OFF CACHE BOOL "Disable MPG123 (use dr_mp3 fallback)" FORCE)
 set(SDLMIXER_INSTALL ON CACHE BOOL "Install SDL_mixer" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL_mixer SDL_mixer_build)
+
+# Fix: Include SDL3_Headers in SDL3_mixer export set for unified builds
+# SDL3_mixer links publicly to SDL3::Headers, so it must be in the same export set
+install(TARGETS SDL3_Headers EXPORT SDL3MixerTargets)
 
 message(STATUS "")
 message(STATUS "=================================================")
