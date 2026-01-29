@@ -203,6 +203,70 @@ jobs:
           path: SDL3-CS/Jars/SDL3AndroidBridge.jar
           if-no-files-found: error
 
+  test-emscripten-example:
+    name: Test Emscripten Build Example
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Emscripten SDK
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: '3.1.72'
+
+      - name: Build SDL libraries using emscripten_build_example
+        run: |
+          cd emscripten_build_example
+          ./build.sh Release 4
+
+      - name: Verify output libraries
+        run: |
+          echo "Checking for output libraries..."
+          if [ -f "emscripten_build_example/build/install/lib/libSDL3.a" ]; then
+            echo "✓ libSDL3.a found"
+            ls -lh emscripten_build_example/build/install/lib/libSDL3.a
+          else
+            echo "✗ libSDL3.a not found"
+            exit 1
+          fi
+          
+          if [ -f "emscripten_build_example/build/install/lib/libSDL3_ttf.a" ]; then
+            echo "✓ libSDL3_ttf.a found"
+            ls -lh emscripten_build_example/build/install/lib/libSDL3_ttf.a
+          else
+            echo "✗ libSDL3_ttf.a not found"
+            exit 1
+          fi
+          
+          if [ -f "emscripten_build_example/build/install/lib/libSDL3_image.a" ]; then
+            echo "✓ libSDL3_image.a found"
+            ls -lh emscripten_build_example/build/install/lib/libSDL3_image.a
+          else
+            echo "✗ libSDL3_image.a not found"
+            exit 1
+          fi
+          
+          if [ -f "emscripten_build_example/build/install/lib/libSDL3_mixer.a" ]; then
+            echo "✓ libSDL3_mixer.a found"
+            ls -lh emscripten_build_example/build/install/lib/libSDL3_mixer.a
+          else
+            echo "✗ libSDL3_mixer.a not found"
+            exit 1
+          fi
+          
+          echo "All libraries built successfully!"
+
+      - name: Upload emscripten example artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: emscripten-build-example-output
+          path: |
+            emscripten_build_example/build/install/lib/*.a
+            emscripten_build_example/build/install/include/
+          if-no-files-found: error
+
   make-pr:
     name: Submit pull request
     runs-on: ubuntu-latest
