@@ -90,6 +90,16 @@ build/install/
     └── cmake/        # CMake config files for find_package()
 ```
 
+### Testing via GitHub Actions
+
+This example can be tested automatically using GitHub Actions:
+
+1. Go to the **Actions** tab in the GitHub repository
+2. Select the **"Build Native"** workflow
+3. Click **"Run workflow"** button
+4. The `test-emscripten-example` job will build and verify the libraries
+5. Download the artifacts to inspect the built libraries and headers
+
 ### Using the Built Libraries
 
 Once built, you can link these libraries in your own Emscripten application:
@@ -221,6 +231,16 @@ build/install/
     ├── libSDL3_image.a
     └── cmake/        # 用于 find_package() 的 CMake 配置文件
 ```
+
+### 通过 GitHub Actions 测试
+
+本示例可以使用 GitHub Actions 自动测试：
+
+1. 进入 GitHub 仓库的 **Actions** 标签页
+2. 选择 **"Build Native"** 工作流
+3. 点击 **"Run workflow"** 按钮
+4. `test-emscripten-example` 任务将构建并验证库文件
+5. 下载构建产物以查看生成的库和头文件
 
 ### 使用构建好的库
 
