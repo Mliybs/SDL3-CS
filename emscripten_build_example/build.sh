@@ -49,6 +49,7 @@ echo ""
 
 # Parse command line arguments
 BUILD_TYPE="${1:-Release}"
+# Use nproc on Linux, sysctl on macOS, or fallback to 4 as default
 JOBS="${2:-$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)}"
 
 echo "Build configuration:"

@@ -258,7 +258,7 @@ target_link_libraries(your_app
 
 ### 注意事项
 
-- 本示例使用**打包的依赖项**（SDLTTF_VENDORED、SDLIMAGE_VENDORED 等）以确保所有必需的库一起构建
+- 本示例使用**内置的依赖项**（SDLTTF_VENDORED、SDLIMAGE_VENDORED 等）以确保所有必需的库一起构建
 - 仅为 Emscripten 构建静态库（不构建共享库）
 - SDL_image 中的 AVIF 支持已禁用，以避免额外的构建依赖
 - SDL 测试和示例已禁用以加快构建速度

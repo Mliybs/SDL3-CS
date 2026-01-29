@@ -41,7 +41,11 @@ message(STATUS "")
 message(STATUS "Configuring SDL3 core library...")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL SDL_build)
 
-# Update CMAKE_PREFIX_PATH to help SDL_ttf and SDL_image find SDL3
+# Note: In this unified build, SDL_ttf and SDL_image should be able to find SDL3::SDL3
+# target directly from the build tree. This differs from External/build.sh which
+# performs separate builds and installs SDL3 before building extensions.
+# Set CMAKE_PREFIX_PATH for consistency, though it may not be strictly necessary
+# in a unified build where all targets are in the same build tree.
 set(CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/lib/cmake" CACHE PATH "CMake prefix path" FORCE)
 
 # Build SDL3_ttf
@@ -70,11 +74,11 @@ message(STATUS "")
 message(STATUS "=================================================")
 message(STATUS "Configuration complete!")
 message(STATUS "")
-message(STATUS "Build with: emmake cmake --build build/")
-message(STATUS "Install with: emmake cmake --install build/")
+message(STATUS "Build with: emmake cmake --build <build_dir>/")
+message(STATUS "Install with: emmake cmake --install <build_dir>/")
 message(STATUS "")
 message(STATUS "Output libraries will be in:")
-message(STATUS "  ${CMAKE_INSTALL_PREFIX}/lib/libSDL3.a")
-message(STATUS "  ${CMAKE_INSTALL_PREFIX}/lib/libSDL3_ttf.a")
-message(STATUS "  ${CMAKE_INSTALL_PREFIX}/lib/libSDL3_image.a")
+message(STATUS "  <build_dir>/install/lib/libSDL3.a")
+message(STATUS "  <build_dir>/install/lib/libSDL3_ttf.a")
+message(STATUS "  <build_dir>/install/lib/libSDL3_image.a")
 message(STATUS "=================================================")
