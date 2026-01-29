@@ -59,8 +59,8 @@ elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
 
     NATIVE_PATH="$NAME"
 
-    # Set up the Emscripten toolchain file
-    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+    # emcmake will automatically set up the Emscripten toolchain
+    # No need to manually specify CMAKE_TOOLCHAIN_FILE
 
     $SUDO apt-get update -y -qq
     $SUDO apt-get install -y \
@@ -192,7 +192,14 @@ run_cmake() {
     fi
 
     rm -rf build
-    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+    
+    # Use emcmake wrapper for Emscripten builds
+    if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+        emcmake cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+    else
+        cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+    fi
+    
     cmake --build build/ --config $BUILD_TYPE --verbose
     cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
 
