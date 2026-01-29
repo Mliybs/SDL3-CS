@@ -59,15 +59,12 @@ elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
 
     NATIVE_PATH="$NAME"
 
-    # Set up the Emscripten toolchain file
-    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+    # emsdk provides its own cmake, ninja, and build tools
+    # Only install git for repository operations
 
     $SUDO apt-get update -y -qq
     $SUDO apt-get install -y \
-            git \
-            cmake \
-            ninja-build \
-            meson
+            git
 else
     NATIVE_PATH="$NAME"
 
@@ -192,9 +189,17 @@ run_cmake() {
     fi
 
     rm -rf build
-    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
-    cmake --build build/ --config $BUILD_TYPE --verbose
-    cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
+    
+    # Use emcmake/emmake wrappers for Emscripten builds
+    if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+        emcmake cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+        emmake cmake --build build/ --config $BUILD_TYPE --verbose
+        emmake cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
+    else
+        cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+        cmake --build build/ --config $BUILD_TYPE --verbose
+        cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
+    fi
 
     # Move build lib into correct folders
     cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
