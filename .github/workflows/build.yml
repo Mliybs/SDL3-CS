@@ -30,6 +30,7 @@ jobs:
           - { name: android-arm,   os: ubuntu-22.04,  flags: -GNinja, abi: armeabi-v7a }
           - { name: android-x64,   os: ubuntu-22.04,  flags: -GNinja, abi: x86_64 }
           - { name: android-x86,   os: ubuntu-22.04,  flags: -GNinja, abi: x86 }
+          - { name: browser-wasm,  os: ubuntu-22.04,  flags: -GNinja }
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,6 +52,12 @@ jobs:
         run: |
           sdkmanager --install "platforms;android-$PLATFORM_VER"
           sdkmanager --install "ndk;$NDK_VER"
+
+      - name: Install Emscripten SDK
+        if: contains(matrix.platform.name, 'browser')
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: '3.1.72'
 
       - name: Build (Linux ARM)
         if: contains(matrix.platform.container, 'arm')
