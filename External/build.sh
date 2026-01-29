@@ -174,6 +174,36 @@ run_cmake() {
         sed -i 's/#include <gameinput.h>/#_include <gameinput.h>/g' CMakeLists.txt
     fi
 
+    # Patch SDL_ttf Config to add find_dependency(SDL3) for SDL3_Headers
+    if [[ $LIB_NAME == 'SDL_ttf' ]]; then
+        echo "Patching SDL_ttf Config to resolve SDL3_Headers dependency"
+        sed -i '/set(SDLTTF_SDL3_REQUIRED_VERSION/a\
+\
+# Find SDL3 to ensure SDL3::Headers is available\
+include(CMakeFindDependencyMacro)\
+find_dependency(SDL3 ${SDLTTF_SDL3_REQUIRED_VERSION})' cmake/SDL3_ttfConfig.cmake.in
+    fi
+
+    # Patch SDL_mixer Config to add find_dependency(SDL3) for SDL3_Headers
+    if [[ $LIB_NAME == 'SDL_mixer' ]]; then
+        echo "Patching SDL_mixer Config to resolve SDL3_Headers dependency"
+        sed -i '/set(SDLMIXER_SDL3_REQUIRED_VERSION/a\
+\
+# Find SDL3 to ensure SDL3::Headers is available\
+include(CMakeFindDependencyMacro)\
+find_dependency(SDL3 ${SDLMIXER_SDL3_REQUIRED_VERSION})' cmake/SDL3_mixerConfig.cmake.in
+    fi
+
+    # Patch SDL_image Config to add find_dependency(SDL3) for SDL3_Headers
+    if [[ $LIB_NAME == 'SDL_image' ]]; then
+        echo "Patching SDL_image Config to resolve SDL3_Headers dependency"
+        sed -i '/set(SDLIMAGE_SDL3_REQUIRED_VERSION/a\
+\
+# Find SDL3 to ensure SDL3::Headers is available\
+include(CMakeFindDependencyMacro)\
+find_dependency(SDL3 ${SDLIMAGE_SDL3_REQUIRED_VERSION})' cmake/SDL3_imageConfig.cmake.in
+    fi
+
     # Change the minumum Android API level for SDL_mixer to API 24 as opusfile and libflac fail to build on lower versions.
     if [[ $BUILD_PLATFORM == 'Android' && $LIB_NAME == 'SDL_mixer' ]]; then
         export FLAGS="${FLAGS/-DANDROID_PLATFORM=21/-DANDROID_PLATFORM=24}"
