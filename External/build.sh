@@ -59,15 +59,12 @@ elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
 
     NATIVE_PATH="$NAME"
 
-    # emcmake will automatically set up the Emscripten toolchain
-    # No need to manually specify CMAKE_TOOLCHAIN_FILE
+    # emsdk provides its own cmake, ninja, and build tools
+    # Only install git for repository operations
 
     $SUDO apt-get update -y -qq
     $SUDO apt-get install -y \
-            git \
-            cmake \
-            ninja-build \
-            meson
+            git
 else
     NATIVE_PATH="$NAME"
 
@@ -193,15 +190,16 @@ run_cmake() {
 
     rm -rf build
     
-    # Use emcmake wrapper for Emscripten builds
+    # Use emcmake/emmake wrappers for Emscripten builds
     if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
         emcmake cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+        emmake cmake --build build/ --config $BUILD_TYPE --verbose
+        emmake cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
     else
         cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
+        cmake --build build/ --config $BUILD_TYPE --verbose
+        cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
     fi
-    
-    cmake --build build/ --config $BUILD_TYPE --verbose
-    cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
 
     # Move build lib into correct folders
     cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
