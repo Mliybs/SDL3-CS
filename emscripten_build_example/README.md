@@ -44,6 +44,21 @@ All libraries are built as static archives suitable for linking with Emscripten 
 
 ### Build Instructions
 
+**Option 1: Using the build script (recommended)**
+
+```bash
+# Navigate to this directory
+cd emscripten_build_example
+
+# Run the build script
+./build.sh
+
+# Or specify build type and parallel jobs
+./build.sh Release 8
+```
+
+**Option 2: Manual CMake commands**
+
 ```bash
 # Navigate to this directory
 cd emscripten_build_example
@@ -116,6 +131,7 @@ To enable SDL3_mixer, edit `CMakeLists.txt` and uncomment the SDL3_mixer section
 - Only static libraries are built for Emscripten (no shared libraries)
 - AVIF support is disabled in SDL_image to avoid additional build dependencies
 - SDL tests and examples are disabled to speed up the build
+- **Configuration aligns with** the main repository's `External/build.sh` script for Emscripten builds, ensuring compatibility with the existing build workflow
 
 ---
 
@@ -158,6 +174,21 @@ To enable SDL3_mixer, edit `CMakeLists.txt` and uncomment the SDL3_mixer section
    ```
 
 ### 构建步骤
+
+**方式一：使用构建脚本（推荐）**
+
+```bash
+# 进入本目录
+cd emscripten_build_example
+
+# 运行构建脚本
+./build.sh
+
+# 或指定构建类型和并行任务数
+./build.sh Release 8
+```
+
+**方式二：手动 CMake 命令**
 
 ```bash
 # 进入本目录
@@ -231,6 +262,7 @@ target_link_libraries(your_app
 - 仅为 Emscripten 构建静态库（不构建共享库）
 - SDL_image 中的 AVIF 支持已禁用，以避免额外的构建依赖
 - SDL 测试和示例已禁用以加快构建速度
+- **配置与主仓库的 `External/build.sh` 脚本对齐**，确保与现有构建工作流程兼容
 
 ### 适用场景
 
