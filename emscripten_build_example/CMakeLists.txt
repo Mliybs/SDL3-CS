@@ -39,6 +39,8 @@ message(STATUS "")
 
 # Build SDL3 core library
 message(STATUS "Configuring SDL3 core library...")
+# Enable SDL3 installation even though it's not the main project
+set(SDL_INSTALL ON CACHE BOOL "Enable installation of SDL3" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../External/SDL SDL_build)
 
 # Note: In this unified build, SDL_ttf and SDL_image should be able to find SDL3::SDL3
