@@ -18,13 +18,51 @@ fi
 
 if [[ -n $ANDROID_ABI ]]; then
     BUILD_PLATFORM="Android"
+elif [[ $NAME == "browser-wasm" ]]; then
+    BUILD_PLATFORM="Emscripten"
 else
     BUILD_PLATFORM="$RUNNER_OS"
 fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-if [[ $BUILD_PLATFORM != 'Android' ]]; then
+if [[ $BUILD_PLATFORM == 'Android' ]]; then
+    if [[ -z $ANDROID_HOME || -z $NDK_VER || -z $ANDROID_ABI ]]; then
+        echo "One or more required environment variables are not defined."
+        exit 1
+    fi
+
+    NATIVE_PATH="android/$ANDROID_ABI"
+
+    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VER"
+    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+                         -DANDROID_HOME=$ANDROID_HOME \
+                         -DANDROID_PLATFORM=21 \
+                         -DANDROID_ABI=$ANDROID_ABI \
+                         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+                         -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH \
+                         -DCMAKE_INSTALL_INCLUDEDIR=include \
+                         -DCMAKE_INSTALL_LIBDIR=lib \
+                         -DCMAKE_INSTALL_DATAROOTDIR=share \
+                         -DSDL_ANDROID_JAR=OFF"
+
+    $SUDO apt-get install -y \
+            git \
+            cmake \
+            ninja-build \
+            meson
+elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    NATIVE_PATH="$NAME"
+
+    # Emscripten uses the emcmake wrapper
+    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+
+    $SUDO apt-get install -y \
+            git \
+            cmake \
+            ninja-build \
+            meson
+else
     NATIVE_PATH="$NAME"
 
     if [[ $BUILD_PLATFORM == 'Linux' ]]; then
@@ -83,31 +121,6 @@ if [[ $BUILD_PLATFORM != 'Android' ]]; then
             libpipewire-0.3-dev$TARGET_APT_ARCH \
             libdecor-0-dev$TARGET_APT_ARCH
     fi
-else
-    if [[ -z $ANDROID_HOME || -z $NDK_VER || -z $ANDROID_ABI ]]; then
-        echo "One or more required environment variables are not defined."
-        exit 1
-    fi
-
-    NATIVE_PATH="android/$ANDROID_ABI"
-
-    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VER"
-    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
-                         -DANDROID_HOME=$ANDROID_HOME \
-                         -DANDROID_PLATFORM=21 \
-                         -DANDROID_ABI=$ANDROID_ABI \
-                         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-                         -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH \
-                         -DCMAKE_INSTALL_INCLUDEDIR=include \
-                         -DCMAKE_INSTALL_LIBDIR=lib \
-                         -DCMAKE_INSTALL_DATAROOTDIR=share \
-                         -DSDL_ANDROID_JAR=OFF"
-
-    $SUDO apt-get install -y \
-            git \
-            cmake \
-            ninja-build \
-            meson
 fi
 
 if [[ $RUNNER_OS == 'Linux' ]]; then
@@ -128,6 +141,8 @@ elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.so"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.dylib"
+elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    OUTPUT_LIB="lib/libSDL3variant.a"
 fi
 
 # Use the correct CMAKE_PREFIX_PATH for SDL_image and SDL_ttf, probably due differences in Cmake versions.
@@ -138,6 +153,8 @@ elif [[ $BUILD_PLATFORM == 'Windows' ]]; then
 elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
+    CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
+elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 fi
 
