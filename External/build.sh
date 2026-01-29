@@ -52,11 +52,17 @@ if [[ $BUILD_PLATFORM == 'Android' ]]; then
             ninja-build \
             meson
 elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    if [[ -z $EMSDK ]]; then
+        echo "EMSDK environment variable is not defined."
+        exit 1
+    fi
+
     NATIVE_PATH="$NAME"
 
-    # Emscripten uses the emcmake wrapper
+    # Set up the Emscripten toolchain file
     export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
 
+    $SUDO apt-get update -y -qq
     $SUDO apt-get install -y \
             git \
             cmake \
@@ -176,8 +182,17 @@ run_cmake() {
         export FLAGS="${FLAGS/-DANDROID_PLATFORM=21/-DANDROID_PLATFORM=24}"
     fi
 
+    # Set library type based on platform
+    if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+        SDL_SHARED_FLAG="-DSDL_SHARED=OFF"
+        SDL_STATIC_FLAG="-DSDL_STATIC=ON"
+    else
+        SDL_SHARED_FLAG="-DSDL_SHARED=ON"
+        SDL_STATIC_FLAG="-DSDL_STATIC=OFF"
+    fi
+
     rm -rf build
-    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSDL_SHARED=ON -DSDL_STATIC=OFF "${@:3}"
+    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
     cmake --build build/ --config $BUILD_TYPE --verbose
     cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
 
