@@ -255,35 +255,35 @@ jobs:
       - name: Verify output libraries
         run: |
           echo "Checking for output libraries..."
-          if [ -f "emscripten_build_example/build/install/lib/libSDL3.a" ]; then
-            echo "✓ libSDL3.a found"
-            ls -lh emscripten_build_example/build/install/lib/libSDL3.a
+          if [ -f "emscripten_build_example/build/install/lib/SDL3.a" ]; then
+            echo "✓ SDL3.a found"
+            ls -lh emscripten_build_example/build/install/lib/SDL3.a
           else
-            echo "✗ libSDL3.a not found"
+            echo "✗ SDL3.a not found"
             exit 1
           fi
           
-          if [ -f "emscripten_build_example/build/install/lib/libSDL3_ttf.a" ]; then
-            echo "✓ libSDL3_ttf.a found"
-            ls -lh emscripten_build_example/build/install/lib/libSDL3_ttf.a
+          if [ -f "emscripten_build_example/build/install/lib/SDL3_ttf.a" ]; then
+            echo "✓ SDL3_ttf.a found"
+            ls -lh emscripten_build_example/build/install/lib/SDL3_ttf.a
           else
-            echo "✗ libSDL3_ttf.a not found"
+            echo "✗ SDL3_ttf.a not found"
             exit 1
           fi
           
-          if [ -f "emscripten_build_example/build/install/lib/libSDL3_image.a" ]; then
-            echo "✓ libSDL3_image.a found"
-            ls -lh emscripten_build_example/build/install/lib/libSDL3_image.a
+          if [ -f "emscripten_build_example/build/install/lib/SDL3_image.a" ]; then
+            echo "✓ SDL3_image.a found"
+            ls -lh emscripten_build_example/build/install/lib/SDL3_image.a
           else
-            echo "✗ libSDL3_image.a not found"
+            echo "✗ SDL3_image.a not found"
             exit 1
           fi
           
-          if [ -f "emscripten_build_example/build/install/lib/libSDL3_mixer.a" ]; then
-            echo "✓ libSDL3_mixer.a found"
-            ls -lh emscripten_build_example/build/install/lib/libSDL3_mixer.a
+          if [ -f "emscripten_build_example/build/install/lib/SDL3_mixer.a" ]; then
+            echo "✓ SDL3_mixer.a found"
+            ls -lh emscripten_build_example/build/install/lib/SDL3_mixer.a
           else
-            echo "✗ libSDL3_mixer.a not found"
+            echo "✗ SDL3_mixer.a not found"
             exit 1
           fi
           
