@@ -82,17 +82,17 @@ echo -e "${GREEN}Build completed successfully!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo "Output libraries:"
-if [ -f "${INSTALL_DIR}/lib/libSDL3.a" ]; then
-    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/libSDL3.a"
+if [ -f "${INSTALL_DIR}/lib/SDL3.a" ]; then
+    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/SDL3.a"
 fi
-if [ -f "${INSTALL_DIR}/lib/libSDL3_ttf.a" ]; then
-    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/libSDL3_ttf.a"
+if [ -f "${INSTALL_DIR}/lib/SDL3_ttf.a" ]; then
+    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/SDL3_ttf.a"
 fi
-if [ -f "${INSTALL_DIR}/lib/libSDL3_image.a" ]; then
-    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/libSDL3_image.a"
+if [ -f "${INSTALL_DIR}/lib/SDL3_image.a" ]; then
+    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/SDL3_image.a"
 fi
-if [ -f "${INSTALL_DIR}/lib/libSDL3_mixer.a" ]; then
-    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/libSDL3_mixer.a"
+if [ -f "${INSTALL_DIR}/lib/SDL3_mixer.a" ]; then
+    echo -e "  ${GREEN}✓${NC} ${INSTALL_DIR}/lib/SDL3_mixer.a"
 fi
 echo ""
 echo "Headers installed in: ${INSTALL_DIR}/include/"
