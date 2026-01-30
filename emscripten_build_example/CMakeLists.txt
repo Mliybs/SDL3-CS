@@ -21,6 +21,9 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "Build SDL3 shared library" FORCE)
 set(SDL_STATIC ON CACHE BOOL "Build SDL3 static library" FORCE)
 
+# Remove "lib" prefix from static library names for Emscripten
+set(CMAKE_STATIC_LIBRARY_PREFIX "" CACHE STRING "Static library prefix" FORCE)
+
 # Configure SDL3 options
 set(SDL_TEST OFF CACHE BOOL "Build SDL3 tests" FORCE)
 set(SDL_EXAMPLES OFF CACHE BOOL "Build SDL3 examples" FORCE)
@@ -117,8 +120,8 @@ message(STATUS "Build with: emmake cmake --build <build_dir>/")
 message(STATUS "Install with: emmake cmake --install <build_dir>/")
 message(STATUS "")
 message(STATUS "Output libraries will be in:")
-message(STATUS "  <build_dir>/install/lib/libSDL3.a")
-message(STATUS "  <build_dir>/install/lib/libSDL3_ttf.a")
-message(STATUS "  <build_dir>/install/lib/libSDL3_image.a")
-message(STATUS "  <build_dir>/install/lib/libSDL3_mixer.a")
+message(STATUS "  <build_dir>/install/lib/SDL3.a")
+message(STATUS "  <build_dir>/install/lib/SDL3_ttf.a")
+message(STATUS "  <build_dir>/install/lib/SDL3_image.a")
+message(STATUS "  <build_dir>/install/lib/SDL3_mixer.a")
 message(STATUS "=================================================")

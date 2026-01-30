@@ -15,10 +15,10 @@ This directory provides a standalone CMake example specifically for building SDL
 
 ### What Gets Built
 
-- `libSDL3.a` - SDL3 core library
-- `libSDL3_ttf.a` - SDL3 TrueType font library  
-- `libSDL3_image.a` - SDL3 image loading library
-- `libSDL3_mixer.a` - SDL3 audio mixing library
+- `SDL3.a` - SDL3 core library
+- `SDL3_ttf.a` - SDL3 TrueType font library  
+- `SDL3_image.a` - SDL3 image loading library
+- `SDL3_mixer.a` - SDL3 audio mixing library
 
 All libraries are built as static archives suitable for linking with Emscripten applications.
 
@@ -85,10 +85,10 @@ build/install/
 │   ├── SDL3_image/
 │   └── SDL3_mixer/
 └── lib/              # Static library files
-    ├── libSDL3.a
-    ├── libSDL3_ttf.a
-    ├── libSDL3_image.a
-    ├── libSDL3_mixer.a
+    ├── SDL3.a
+    ├── SDL3_ttf.a
+    ├── SDL3_image.a
+    ├── SDL3_mixer.a
     └── cmake/        # CMake config files for find_package()
 ```
 
@@ -120,10 +120,10 @@ target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_im
 Or link directly:
 ```cmake
 target_link_libraries(your_app 
-    /path/to/build/install/lib/libSDL3.a
-    /path/to/build/install/lib/libSDL3_ttf.a
-    /path/to/build/install/lib/libSDL3_image.a
-    /path/to/build/install/lib/libSDL3_mixer.a
+    /path/to/build/install/lib/SDL3.a
+    /path/to/build/install/lib/SDL3_ttf.a
+    /path/to/build/install/lib/SDL3_image.a
+    /path/to/build/install/lib/SDL3_mixer.a
 )
 ```
 
@@ -149,10 +149,10 @@ target_link_libraries(your_app
 
 ### 构建内容
 
-- `libSDL3.a` - SDL3 核心库
-- `libSDL3_ttf.a` - SDL3 TrueType 字体库
-- `libSDL3_image.a` - SDL3 图像加载库
-- `libSDL3_mixer.a` - SDL3 音频混音库
+- `SDL3.a` - SDL3 核心库
+- `SDL3_ttf.a` - SDL3 TrueType 字体库
+- `SDL3_image.a` - SDL3 图像加载库
+- `SDL3_mixer.a` - SDL3 音频混音库
 
 所有库都构建为静态归档文件，适合与 Emscripten 应用程序链接。
 
@@ -219,10 +219,10 @@ build/install/
 │   ├── SDL3_image/
 │   └── SDL3_mixer/
 └── lib/              # 静态库文件
-    ├── libSDL3.a
-    ├── libSDL3_ttf.a
-    ├── libSDL3_image.a
-    ├── libSDL3_mixer.a
+    ├── SDL3.a
+    ├── SDL3_ttf.a
+    ├── SDL3_image.a
+    ├── SDL3_mixer.a
     └── cmake/        # 用于 find_package() 的 CMake 配置文件
 ```
 
@@ -254,10 +254,10 @@ target_link_libraries(your_app SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_im
 或者直接链接：
 ```cmake
 target_link_libraries(your_app 
-    /path/to/build/install/lib/libSDL3.a
-    /path/to/build/install/lib/libSDL3_ttf.a
-    /path/to/build/install/lib/libSDL3_image.a
-    /path/to/build/install/lib/libSDL3_mixer.a
+    /path/to/build/install/lib/SDL3.a
+    /path/to/build/install/lib/SDL3_ttf.a
+    /path/to/build/install/lib/SDL3_image.a
+    /path/to/build/install/lib/SDL3_mixer.a
 )
 ```
 
