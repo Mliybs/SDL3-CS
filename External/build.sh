@@ -151,4 +151,36 @@ run_cmake() {
 
     if [[ $BUILD_PLATFORM == 'Windows' && $LIB_NAME == 'SDL' ]]; then
         echo "Patching SDL to not include gameinput.h"
-        sed -i 's/#i
+        sed -i 's/#include <gameinput.h>/#_include <gameinput.h>/g' CMakeLists.txt
+    fi
+
+    # Change the minumum Android API level for SDL_mixer to API 24 as opusfile and libflac fail to build on lower versions.
+    if [[ $BUILD_PLATFORM == 'Android' && $LIB_NAME == 'SDL_mixer' ]]; then
+        export FLAGS="${FLAGS/-DANDROID_PLATFORM=21/-DANDROID_PLATFORM=24}"
+    fi
+
+    rm -rf build
+    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSDL_SHARED=ON -DSDL_STATIC=OFF "${@:3}"
+    cmake --build build/ --config $BUILD_TYPE --verbose
+    cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
+
+    # Move build lib into correct folders
+    cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
+
+    popd
+}
+
+run_cmake SDL ${OUTPUT_LIB/variant/}
+
+run_cmake SDL_ttf ${OUTPUT_LIB/variant/_ttf} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DSDLTTF_VENDORED=ON
+
+# -DSDLIMAGE_AVIF=OFF is used because windows requires special setup to build avif support (nasm)
+# TODO: Add support for avif on windows (VisualC script uses dynamic imports)
+run_cmake SDL_image ${OUTPUT_LIB/variant/_image} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLIMAGE_VENDORED=ON
+
+# -DSDLMIXER_MP3_MPG123=OFF is used because upstream build is broken. Fallback to dr_mp3.
+# See: https://github.com/libsdl-org/SDL_mixer/pull/744#issuecomment-3180682130
+# Fixing using the proposed solution causes more issues.
+run_cmake SDL_mixer ${OUTPUT_LIB/variant/_mixer} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DSDLMIXER_MP3_MPG123=OFF -DSDLMIXER_DEPS_SHARED=OFF -DSDLMIXER_VENDORED=ON
+
+popd
