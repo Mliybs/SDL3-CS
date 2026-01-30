@@ -52,12 +52,6 @@ jobs:
           sdkmanager --install "platforms;android-$PLATFORM_VER"
           sdkmanager --install "ndk;$NDK_VER"
 
-      - name: Install Emscripten SDK
-        if: contains(matrix.platform.name, 'browser')
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: '3.1.72'
-
       - name: Build (Linux ARM)
         if: contains(matrix.platform.container, 'arm')
         uses: addnab/docker-run-action@v3
