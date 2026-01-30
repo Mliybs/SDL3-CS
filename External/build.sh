@@ -18,54 +18,13 @@ fi
 
 if [[ -n $ANDROID_ABI ]]; then
     BUILD_PLATFORM="Android"
-elif [[ $NAME == "browser-wasm" ]]; then
-    BUILD_PLATFORM="Emscripten"
 else
     BUILD_PLATFORM="$RUNNER_OS"
 fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-if [[ $BUILD_PLATFORM == 'Android' ]]; then
-    if [[ -z $ANDROID_HOME || -z $NDK_VER || -z $ANDROID_ABI ]]; then
-        echo "One or more required environment variables are not defined."
-        exit 1
-    fi
-
-    NATIVE_PATH="android/$ANDROID_ABI"
-
-    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VER"
-    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
-                         -DANDROID_HOME=$ANDROID_HOME \
-                         -DANDROID_PLATFORM=21 \
-                         -DANDROID_ABI=$ANDROID_ABI \
-                         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-                         -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH \
-                         -DCMAKE_INSTALL_INCLUDEDIR=include \
-                         -DCMAKE_INSTALL_LIBDIR=lib \
-                         -DCMAKE_INSTALL_DATAROOTDIR=share \
-                         -DSDL_ANDROID_JAR=OFF"
-
-    $SUDO apt-get install -y \
-            git \
-            cmake \
-            ninja-build \
-            meson
-elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
-    if [[ -z $EMSDK ]]; then
-        echo "EMSDK environment variable is not defined."
-        exit 1
-    fi
-
-    NATIVE_PATH="$NAME"
-
-    # emsdk provides its own cmake, ninja, and build tools
-    # Only install git for repository operations
-
-    $SUDO apt-get update -y -qq
-    $SUDO apt-get install -y \
-            git
-else
+if [[ $BUILD_PLATFORM != 'Android' ]]; then
     NATIVE_PATH="$NAME"
 
     if [[ $BUILD_PLATFORM == 'Linux' ]]; then
@@ -124,6 +83,31 @@ else
             libpipewire-0.3-dev$TARGET_APT_ARCH \
             libdecor-0-dev$TARGET_APT_ARCH
     fi
+else
+    if [[ -z $ANDROID_HOME || -z $NDK_VER || -z $ANDROID_ABI ]]; then
+        echo "One or more required environment variables are not defined."
+        exit 1
+    fi
+
+    NATIVE_PATH="android/$ANDROID_ABI"
+
+    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$NDK_VER"
+    export FLAGS="$FLAGS -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+                         -DANDROID_HOME=$ANDROID_HOME \
+                         -DANDROID_PLATFORM=21 \
+                         -DANDROID_ABI=$ANDROID_ABI \
+                         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+                         -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH \
+                         -DCMAKE_INSTALL_INCLUDEDIR=include \
+                         -DCMAKE_INSTALL_LIBDIR=lib \
+                         -DCMAKE_INSTALL_DATAROOTDIR=share \
+                         -DSDL_ANDROID_JAR=OFF"
+
+    $SUDO apt-get install -y \
+            git \
+            cmake \
+            ninja-build \
+            meson
 fi
 
 if [[ $RUNNER_OS == 'Linux' ]]; then
@@ -144,8 +128,6 @@ elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.so"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.dylib"
-elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
-    OUTPUT_LIB="lib/libSDL3variant.a"
 fi
 
 # Use the correct CMAKE_PREFIX_PATH for SDL_image and SDL_ttf, probably due differences in Cmake versions.
@@ -156,8 +138,6 @@ elif [[ $BUILD_PLATFORM == 'Windows' ]]; then
 elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
-    CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
-elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 fi
 
@@ -171,83 +151,4 @@ run_cmake() {
 
     if [[ $BUILD_PLATFORM == 'Windows' && $LIB_NAME == 'SDL' ]]; then
         echo "Patching SDL to not include gameinput.h"
-        sed -i 's/#include <gameinput.h>/#_include <gameinput.h>/g' CMakeLists.txt
-    fi
-
-    # Patch SDL_ttf Config to add find_dependency(SDL3) for SDL3_Headers
-    if [[ $LIB_NAME == 'SDL_ttf' ]]; then
-        echo "Patching SDL_ttf Config to resolve SDL3_Headers dependency"
-        sed -i '/set(SDLTTF_SDL3_REQUIRED_VERSION/a\
-\
-# Find SDL3 to ensure SDL3::Headers is available\
-include(CMakeFindDependencyMacro)\
-find_dependency(SDL3 ${SDLTTF_SDL3_REQUIRED_VERSION})' cmake/SDL3_ttfConfig.cmake.in
-    fi
-
-    # Patch SDL_mixer Config to add find_dependency(SDL3) for SDL3_Headers
-    if [[ $LIB_NAME == 'SDL_mixer' ]]; then
-        echo "Patching SDL_mixer Config to resolve SDL3_Headers dependency"
-        sed -i '/set(SDLMIXER_SDL3_REQUIRED_VERSION/a\
-\
-# Find SDL3 to ensure SDL3::Headers is available\
-include(CMakeFindDependencyMacro)\
-find_dependency(SDL3 ${SDLMIXER_SDL3_REQUIRED_VERSION})' cmake/SDL3_mixerConfig.cmake.in
-    fi
-
-    # Patch SDL_image Config to add find_dependency(SDL3) for SDL3_Headers
-    if [[ $LIB_NAME == 'SDL_image' ]]; then
-        echo "Patching SDL_image Config to resolve SDL3_Headers dependency"
-        sed -i '/set(SDLIMAGE_SDL3_REQUIRED_VERSION/a\
-\
-# Find SDL3 to ensure SDL3::Headers is available\
-include(CMakeFindDependencyMacro)\
-find_dependency(SDL3 ${SDLIMAGE_SDL3_REQUIRED_VERSION})' cmake/SDL3_imageConfig.cmake.in
-    fi
-
-    # Change the minumum Android API level for SDL_mixer to API 24 as opusfile and libflac fail to build on lower versions.
-    if [[ $BUILD_PLATFORM == 'Android' && $LIB_NAME == 'SDL_mixer' ]]; then
-        export FLAGS="${FLAGS/-DANDROID_PLATFORM=21/-DANDROID_PLATFORM=24}"
-    fi
-
-    # Set library type based on platform
-    if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
-        SDL_SHARED_FLAG="-DSDL_SHARED=OFF"
-        SDL_STATIC_FLAG="-DSDL_STATIC=ON"
-    else
-        SDL_SHARED_FLAG="-DSDL_SHARED=ON"
-        SDL_STATIC_FLAG="-DSDL_STATIC=OFF"
-    fi
-
-    rm -rf build
-    
-    # Use emcmake/emmake wrappers for Emscripten builds
-    if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
-        emcmake cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
-        emmake cmake --build build/ --config $BUILD_TYPE --verbose
-        emmake cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
-    else
-        cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SDL_SHARED_FLAG $SDL_STATIC_FLAG "${@:3}"
-        cmake --build build/ --config $BUILD_TYPE --verbose
-        cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
-    fi
-
-    # Move build lib into correct folders
-    cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
-
-    popd
-}
-
-run_cmake SDL ${OUTPUT_LIB/variant/}
-
-run_cmake SDL_ttf ${OUTPUT_LIB/variant/_ttf} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DSDLTTF_VENDORED=ON
-
-# -DSDLIMAGE_AVIF=OFF is used because windows requires special setup to build avif support (nasm)
-# TODO: Add support for avif on windows (VisualC script uses dynamic imports)
-run_cmake SDL_image ${OUTPUT_LIB/variant/_image} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLIMAGE_VENDORED=ON
-
-# -DSDLMIXER_MP3_MPG123=OFF is used because upstream build is broken. Fallback to dr_mp3.
-# See: https://github.com/libsdl-org/SDL_mixer/pull/744#issuecomment-3180682130
-# Fixing using the proposed solution causes more issues.
-run_cmake SDL_mixer ${OUTPUT_LIB/variant/_mixer} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH -DSDLMIXER_MP3_MPG123=OFF -DSDLMIXER_DEPS_SHARED=OFF -DSDLMIXER_VENDORED=ON
-
-popd
+        sed -i 's/#i
