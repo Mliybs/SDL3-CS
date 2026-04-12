@@ -14,5 +14,5 @@ function mainLoop() {
     window.requestAnimationFrame(mainLoop);
 }
 
-await runMain();
+await runMain(config.mainAssemblyName, []);
 window.requestAnimationFrame(mainLoop);

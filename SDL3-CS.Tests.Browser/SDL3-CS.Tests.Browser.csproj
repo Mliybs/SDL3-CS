@@ -12,6 +12,7 @@
     <WasmBuildNative>true</WasmBuildNative>
     <WasmNativeStrip>true</WasmNativeStrip>
     <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
@@ -25,8 +26,16 @@
   <ItemGroup>
     <WasmExtraFilesToDeploy Include="index.html"/>
     <WasmExtraFilesToDeploy Include="main.js"/>
-    <NativeFileReference Include="..\native\browser-wasm\libSDL3.a"/>
   </ItemGroup>
+
+  <Target Name="_StageNativeSdlForPInvokeScan" BeforeTargets="_PrepareForWasmBuildNative">
+    <Copy SourceFiles="..\native\browser-wasm\libSDL3.a"
+          DestinationFiles="$(IntermediateOutputPath)SDL3.a"
+          SkipUnchangedFiles="true"/>
+    <ItemGroup>
+      <NativeFileReference Include="$(IntermediateOutputPath)SDL3.a"/>
+    </ItemGroup>
+  </Target>
 
   <Choose>
     <When Condition=" '$(Configuration)' == 'Debug' ">
