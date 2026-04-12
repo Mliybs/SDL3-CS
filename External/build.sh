@@ -16,15 +16,32 @@ else
     SUDO=$(which sudo || exit 0)
 fi
 
-if [[ -n $ANDROID_ABI ]]; then
+if [[ -n $EMSCRIPTEN ]]; then
+    BUILD_PLATFORM="Emscripten"
+elif [[ -n $ANDROID_ABI ]]; then
     BUILD_PLATFORM="Android"
 else
     BUILD_PLATFORM="$RUNNER_OS"
 fi
 
+if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    CMAKE_WRAPPER="emcmake"
+    SDL_SHARED_FLAG=OFF
+    SDL_STATIC_FLAG=ON
+    EXTRA_CMAKE_FLAGS="-DBUILD_SHARED_LIBS=OFF"
+else
+    CMAKE_WRAPPER=""
+    SDL_SHARED_FLAG=ON
+    SDL_STATIC_FLAG=OFF
+    EXTRA_CMAKE_FLAGS=""
+fi
+
 export DEBIAN_FRONTEND=noninteractive
 
-if [[ $BUILD_PLATFORM != 'Android' ]]; then
+if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    NATIVE_PATH="browser-wasm"
+    mkdir -p ../native/$NATIVE_PATH
+elif [[ $BUILD_PLATFORM != 'Android' ]]; then
     NATIVE_PATH="$NAME"
 
     if [[ $BUILD_PLATFORM == 'Linux' ]]; then
@@ -128,6 +145,8 @@ elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.so"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.dylib"
+elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
+    OUTPUT_LIB="lib/libSDL3variant.a"
 fi
 
 # Use the correct CMAKE_PREFIX_PATH for SDL_image and SDL_ttf, probably due differences in Cmake versions.
@@ -138,6 +157,8 @@ elif [[ $BUILD_PLATFORM == 'Windows' ]]; then
 elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
+    CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
+elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 fi
 
@@ -160,7 +181,7 @@ run_cmake() {
     fi
 
     rm -rf build
-    cmake -B build $FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSDL_SHARED=ON -DSDL_STATIC=OFF "${@:3}"
+    $CMAKE_WRAPPER cmake -B build $FLAGS $EXTRA_CMAKE_FLAGS -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DSDL_SHARED=$SDL_SHARED_FLAG -DSDL_STATIC=$SDL_STATIC_FLAG "${@:3}"
     cmake --build build/ --config $BUILD_TYPE --verbose
     cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
 
