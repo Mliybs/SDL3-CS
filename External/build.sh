@@ -189,7 +189,7 @@ run_cmake() {
 
     # Move build lib into correct folders
     # cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
-    cp $CMAKE_INSTALL_PREFIX/* ../../native/$NATIVE_PATH -f
+    cp -v $CMAKE_INSTALL_PREFIX/* ../../native/$NATIVE_PATH
 
     popd
 }
