@@ -148,7 +148,7 @@ elif [[ $BUILD_PLATFORM == 'Linux' ]]; then
 elif [[ $BUILD_PLATFORM == 'macOS' ]]; then
     OUTPUT_LIB="lib/libSDL3variant.dylib"
 elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
-    OUTPUT_LIB="lib/libSDL3variant.a"
+    OUTPUT_LIB="lib/SDL3variant.a"
 fi
 
 # Use the correct CMAKE_PREFIX_PATH for SDL_image and SDL_ttf, probably due differences in Cmake versions.
