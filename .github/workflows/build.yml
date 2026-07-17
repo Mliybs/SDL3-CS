@@ -55,7 +55,9 @@ jobs:
 
       - name: Setup Emscripten
         if: matrix.platform.emscripten == 1
-        uses: emscripten-core/setup-emsdk@v15
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          version: 5.0.6
 
       - name: Build (Linux ARM)
         if: contains(matrix.platform.container, 'arm')
