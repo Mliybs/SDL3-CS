@@ -112,6 +112,9 @@ namespace SDL
         public static extern SDLBool SDL_ClearProperty(SDL_PropertiesID props, [NativeTypeName("const char *")] byte* name);
 
         [DllImport("SDL3", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern int SDL_GetNumProperties(SDL_PropertiesID props);
+
+        [DllImport("SDL3", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern SDLBool SDL_EnumerateProperties(SDL_PropertiesID props, [NativeTypeName("SDL_EnumeratePropertiesCallback")] delegate* unmanaged[Cdecl]<IntPtr, SDL_PropertiesID, byte*, void> callback, [NativeTypeName("void*")] IntPtr userdata);
 

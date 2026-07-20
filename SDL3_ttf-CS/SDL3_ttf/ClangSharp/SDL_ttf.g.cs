@@ -114,6 +114,39 @@ namespace SDL
         TTF_GPU_TEXTENGINE_WINDING_COUNTER_CLOCKWISE,
     }
 
+    public partial struct TTF_GLAtlasDrawVertex
+    {
+        public SDL_FPoint position;
+
+        public SDL_FPoint texcoord;
+    }
+
+    public unsafe partial struct TTF_GLAtlasDrawSequence
+    {
+        public uint atlas_texture;
+
+        public TTF_GLAtlasDrawVertex* vertices;
+
+        public int num_vertices;
+
+        [NativeTypeName("Uint16 *")]
+        public ushort* indices;
+
+        public int num_indices;
+
+        public TTF_ImageType image_type;
+
+        [NativeTypeName("struct TTF_GLAtlasDrawSequence *")]
+        public TTF_GLAtlasDrawSequence* next;
+    }
+
+    public enum TTF_GLTextEngineWinding
+    {
+        TTF_GL_TEXTENGINE_WINDING_INVALID = -1,
+        TTF_GL_TEXTENGINE_WINDING_CLOCKWISE,
+        TTF_GL_TEXTENGINE_WINDING_COUNTER_CLOCKWISE,
+    }
+
     public partial struct TTF_SubString
     {
         public TTF_SubStringFlags flags;
@@ -410,6 +443,24 @@ namespace SDL
         public static extern TTF_GPUTextEngineWinding TTF_GetGPUTextEngineWinding([NativeTypeName("const TTF_TextEngine *")] TTF_TextEngine* engine);
 
         [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern TTF_TextEngine* TTF_CreateGLTextEngine();
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern TTF_TextEngine* TTF_CreateGLTextEngineWithProperties(SDL_PropertiesID props);
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern TTF_GLAtlasDrawSequence* TTF_GetGLTextDrawData(TTF_Text* text);
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void TTF_DestroyGLTextEngine(TTF_TextEngine* engine);
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void TTF_SetGLTextEngineWinding(TTF_TextEngine* engine, TTF_GLTextEngineWinding winding);
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern TTF_GLTextEngineWinding TTF_GetGLTextEngineWinding([NativeTypeName("const TTF_TextEngine *")] TTF_TextEngine* engine);
+
+        [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern TTF_Text* TTF_CreateText(TTF_TextEngine* engine, TTF_Font* font, [NativeTypeName("const char *")] byte* text, [NativeTypeName("size_t")] nuint length);
 
         [DllImport("SDL3_ttf", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -647,6 +698,9 @@ namespace SDL
 
         [NativeTypeName("#define TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER \"SDL_ttf.gpu_text_engine.create.atlas_texture_size\"")]
         public static ReadOnlySpan<byte> TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER => "SDL_ttf.gpu_text_engine.create.atlas_texture_size"u8;
+
+        [NativeTypeName("#define TTF_PROP_GL_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER \"SDL_ttf.gl_text_engine.create.atlas_texture_size\"")]
+        public static ReadOnlySpan<byte> TTF_PROP_GL_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER => "SDL_ttf.gl_text_engine.create.atlas_texture_size"u8;
 
         [NativeTypeName("#define TTF_SUBSTRING_DIRECTION_MASK 0x000000FF")]
         public const int TTF_SUBSTRING_DIRECTION_MASK = 0x000000FF;

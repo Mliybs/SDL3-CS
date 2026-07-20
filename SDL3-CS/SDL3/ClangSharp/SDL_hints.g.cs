@@ -775,6 +775,9 @@ namespace SDL
         [NativeTypeName("#define SDL_HINT_VIDEO_X11_XRANDR \"SDL_VIDEO_X11_XRANDR\"")]
         public static ReadOnlySpan<byte> SDL_HINT_VIDEO_X11_XRANDR => "SDL_VIDEO_X11_XRANDR"u8;
 
+        [NativeTypeName("#define SDL_HINT_VISIONOS_HDR_HEADROOM_UI \"SDL_VISIONOS_HDR_HEADROOM_UI\"")]
+        public static ReadOnlySpan<byte> SDL_HINT_VISIONOS_HDR_HEADROOM_UI => "SDL_VISIONOS_HDR_HEADROOM_UI"u8;
+
         [NativeTypeName("#define SDL_HINT_VITA_ENABLE_BACK_TOUCH \"SDL_VITA_ENABLE_BACK_TOUCH\"")]
         public static ReadOnlySpan<byte> SDL_HINT_VITA_ENABLE_BACK_TOUCH => "SDL_VITA_ENABLE_BACK_TOUCH"u8;
 

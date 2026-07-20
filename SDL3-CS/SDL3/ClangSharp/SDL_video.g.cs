@@ -567,6 +567,9 @@ namespace SDL
         [NativeTypeName("#define SDL_PROP_GLOBAL_VIDEO_WAYLAND_WL_DISPLAY_POINTER \"SDL.video.wayland.wl_display\"")]
         public static ReadOnlySpan<byte> SDL_PROP_GLOBAL_VIDEO_WAYLAND_WL_DISPLAY_POINTER => "SDL.video.wayland.wl_display"u8;
 
+        [NativeTypeName("#define SDL_PROP_GLOBAL_VIDEO_WAYLAND_SESSION_ID_STRING \"SDL.video.wayland.session_id\"")]
+        public static ReadOnlySpan<byte> SDL_PROP_GLOBAL_VIDEO_WAYLAND_SESSION_ID_STRING => "SDL.video.wayland.session_id"u8;
+
         [NativeTypeName("#define SDL_WINDOW_FULLSCREEN SDL_UINT64_C(0x0000000000000001)")]
         public const ulong SDL_WINDOW_FULLSCREEN = 0x0000000000000001UL;
 
@@ -798,6 +801,9 @@ namespace SDL
         [NativeTypeName("#define SDL_PROP_WINDOW_CREATE_WAYLAND_CREATE_EGL_WINDOW_BOOLEAN \"SDL.window.create.wayland.create_egl_window\"")]
         public static ReadOnlySpan<byte> SDL_PROP_WINDOW_CREATE_WAYLAND_CREATE_EGL_WINDOW_BOOLEAN => "SDL.window.create.wayland.create_egl_window"u8;
 
+        [NativeTypeName("#define SDL_PROP_WINDOW_CREATE_WAYLAND_WINDOW_ID_STRING \"SDL.window.create.wayland.window_id\"")]
+        public static ReadOnlySpan<byte> SDL_PROP_WINDOW_CREATE_WAYLAND_WINDOW_ID_STRING => "SDL.window.create.wayland.window_id"u8;
+
         [NativeTypeName("#define SDL_PROP_WINDOW_CREATE_WAYLAND_WL_SURFACE_POINTER \"SDL.window.create.wayland.wl_surface\"")]
         public static ReadOnlySpan<byte> SDL_PROP_WINDOW_CREATE_WAYLAND_WL_SURFACE_POINTER => "SDL.window.create.wayland.wl_surface"u8;
 
@@ -905,6 +911,9 @@ namespace SDL
 
         [NativeTypeName("#define SDL_PROP_WINDOW_WAYLAND_EGL_WINDOW_POINTER \"SDL.window.wayland.egl_window\"")]
         public static ReadOnlySpan<byte> SDL_PROP_WINDOW_WAYLAND_EGL_WINDOW_POINTER => "SDL.window.wayland.egl_window"u8;
+
+        [NativeTypeName("#define SDL_PROP_WINDOW_WAYLAND_WINDOW_ID_STRING \"SDL.window.wayland.window_id\"")]
+        public static ReadOnlySpan<byte> SDL_PROP_WINDOW_WAYLAND_WINDOW_ID_STRING => "SDL.window.wayland.window_id"u8;
 
         [NativeTypeName("#define SDL_PROP_WINDOW_WAYLAND_XDG_SURFACE_POINTER \"SDL.window.wayland.xdg_surface\"")]
         public static ReadOnlySpan<byte> SDL_PROP_WINDOW_WAYLAND_XDG_SURFACE_POINTER => "SDL.window.wayland.xdg_surface"u8;
