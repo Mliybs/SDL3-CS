@@ -192,7 +192,8 @@ run_cmake() {
     then
         for item in $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/lib*.a
         do
-            cp ${item} ../../native/$NATIVE_PATH/$(basename ${item/lib/})
+            file_name = $(basename item)
+            cp ${item} ../../native/$NATIVE_PATH/${file_name/lib/}
         done
     else
         cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
