@@ -188,10 +188,15 @@ run_cmake() {
     cmake --install build/ --prefix $CMAKE_INSTALL_PREFIX --config $BUILD_TYPE
 
     # Move build lib into correct folders
-    echo $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT
-    ls $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)
-    cp -rv $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/. ../../native/$NATIVE_PATH
-    #cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
+    if [[ $BUILD_PLATFORM == 'Emscripten' ]]
+    then
+        for item in $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/lib*.a
+        do
+            cp ${item} ../../native/$NATIVE_PATH/$(basename ${item/lib/})
+        done
+    else
+        cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
+    fi
 
     popd
 }
