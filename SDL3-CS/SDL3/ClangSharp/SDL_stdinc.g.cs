@@ -719,6 +719,18 @@ namespace SDL
         [NativeTypeName("#define SDL_PRILLX SDL_PRILL_PREFIX \"X\"")]
         public static ReadOnlySpan<byte> SDL_PRILLX => "llX"u8;
 
+        [NativeTypeName("#define SDL_PRISZ_PREFIX \"z\"")]
+        public static ReadOnlySpan<byte> SDL_PRISZ_PREFIX => "z"u8;
+
+        [NativeTypeName("#define SDL_PRISZu SDL_PRISZ_PREFIX \"u\"")]
+        public static ReadOnlySpan<byte> SDL_PRISZu => "zu"u8;
+
+        [NativeTypeName("#define SDL_PRISZx SDL_PRISZ_PREFIX \"x\"")]
+        public static ReadOnlySpan<byte> SDL_PRISZx => "zx"u8;
+
+        [NativeTypeName("#define SDL_PRISZX SDL_PRISZ_PREFIX \"X\"")]
+        public static ReadOnlySpan<byte> SDL_PRISZX => "zX"u8;
+
         [NativeTypeName("#define SDL_INVALID_UNICODE_CODEPOINT 0xFFFD")]
         public const int SDL_INVALID_UNICODE_CODEPOINT = 0xFFFD;
 
