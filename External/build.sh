@@ -28,7 +28,7 @@ if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_WRAPPER="emcmake"
     SDL_SHARED_FLAG=OFF
     SDL_STATIC_FLAG=ON
-    EXTRA_CMAKE_FLAGS='-DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDLTTF_SAMPLES=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLMIXER_SAMPLES=OFF'
+    EXTRA_CMAKE_FLAGS='-DCMAKE_SHARED_LIBRARY_PREFIX= -DCMAKE_STATIC_LIBRARY_PREFIX= -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDLTTF_SAMPLES=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLMIXER_SAMPLES=OFF'
 else
     CMAKE_WRAPPER=""
     SDL_SHARED_FLAG=ON
@@ -41,6 +41,10 @@ export DEBIAN_FRONTEND=noninteractive
 if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     NATIVE_PATH="browser-wasm"
     mkdir -p ../native/$NATIVE_PATH
+    mkdir ../native/$NATIVE_PATH/SDL
+    mkdir ../native/$NATIVE_PATH/SDL_ttf
+    mkdir ../native/$NATIVE_PATH/SDL_image
+    mkdir ../native/$NATIVE_PATH/SDL_mixer
 elif [[ $BUILD_PLATFORM != 'Android' ]]; then
     NATIVE_PATH="$NAME"
 
@@ -164,6 +168,11 @@ elif [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX/lib/cmake/"
 fi
 
+if [[ $BUILD_PLATFORM == 'Emscripten' ]]
+then
+    declare -A has_copied
+fi
+
 run_cmake() {
     LIB_NAME=$1
     LIB_OUTPUT=$2
@@ -193,8 +202,12 @@ run_cmake() {
         for item in $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/*.a
         do
             file_name=$(basename ${item})
-            # cp ${item} ../../native/$NATIVE_PATH/${file_name/lib/}
-            cp ${item} ../../native/$NATIVE_PATH/$LIB_NAME/${file_name}
+            if [[ -z ${has_copied[${file_name}]} ]]
+            then
+                # cp ${item} ../../native/$NATIVE_PATH/${file_name/lib/}
+                cp ${item} ../../native/$NATIVE_PATH/$LIB_NAME/${file_name}
+                has_copied[${file_name}]=1
+            fi
         done
     else
         cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
