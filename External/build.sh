@@ -28,7 +28,7 @@ if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     CMAKE_WRAPPER="emcmake"
     SDL_SHARED_FLAG=OFF
     SDL_STATIC_FLAG=ON
-    EXTRA_CMAKE_FLAGS='-DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDLTTF_SAMPLES=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLMIXER_SAMPLES=OFF -DCMAKE_STATIC_LIBRARY_PREFIX='
+    EXTRA_CMAKE_FLAGS='-DCMAKE_STATIC_LIBRARY_PREFIX=cnm -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDLTTF_SAMPLES=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLMIXER_SAMPLES=OFF'
 else
     CMAKE_WRAPPER=""
     SDL_SHARED_FLAG=ON
@@ -190,10 +190,11 @@ run_cmake() {
     # Move build lib into correct folders
     if [[ $BUILD_PLATFORM == 'Emscripten' ]]
     then
-        for item in $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/lib*.a
+        for item in $(dirname $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT)/*.a
         do
             file_name=$(basename ${item})
-            cp ${item} ../../native/$NATIVE_PATH/${file_name/lib/}
+            # cp ${item} ../../native/$NATIVE_PATH/${file_name/lib/}
+            cp ${item} ../../native/$NATIVE_PATH/${file_name}
         done
     else
         cp $CMAKE_INSTALL_PREFIX/$LIB_OUTPUT ../../native/$NATIVE_PATH
