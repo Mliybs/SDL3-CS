@@ -40,11 +40,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 if [[ $BUILD_PLATFORM == 'Emscripten' ]]; then
     NATIVE_PATH="browser-wasm"
-    mkdir -p ../native/$NATIVE_PATH
-    mkdir ../native/$NATIVE_PATH/SDL
-    mkdir ../native/$NATIVE_PATH/SDL_ttf
-    mkdir ../native/$NATIVE_PATH/SDL_image
-    mkdir ../native/$NATIVE_PATH/SDL_mixer
 elif [[ $BUILD_PLATFORM != 'Android' ]]; then
     NATIVE_PATH="$NAME"
 
