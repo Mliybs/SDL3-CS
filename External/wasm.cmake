@@ -1,0 +1,5 @@
+message(STATUS "Applying override")
+
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+
+set(CMAKE_STATIC_LIBRARY_PREFIX "")
